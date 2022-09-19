@@ -1,0 +1,14 @@
+[Unit]
+Description=run pisignage import script
+After=multi-user.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/pi
+User=pi
+Group=pi
+#ExecStart=/home/pi/piSignagePro/misc/import-assets.sh >> /home/pi/usbimport.log 2>&1
+ExecStart=/bin/bash -c 'exec /home/pi/piSignagePro/misc/import-assets.sh >> /home/pi/usbimport.log 2>&1'
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,102 @@
+{
+    "server": "pisignage.com",
+    "version": "4.7.5",
+    "platform_version": "NA",
+    "cpuSerialNumber": "4000000012345678",
+    "ethMac": null,
+    "wifiMac": null,
+    "myIpAddress": "192.168.29.230 ",
+    "systemIP": [
+        {
+            "type": "en0",
+            "ip": "192.168.29.230",
+            "mac": "d0:81:7a:b9:a3:f2"
+        }
+    ],
+    "dns": {
+        "primary": "8.8.4.4",
+        "secondary": "8.8.8.8"
+    },
+    "testNetwork": false,
+    "nwinfo": null,
+    "edidResolution": [
+        1920,
+        1080
+    ],
+    "availablePlayers": {
+        "video": [],
+        "pdf": [],
+        "widgets": [],
+        "ticker": []
+    },
+    "name": "piPlayer",
+    "installation": "admin",
+    "secret": "default",
+    "TZ": "",
+    "currentVersion": "",
+    "orientation": "landscape",
+    "resolution": "auto",
+    "monitorArrangement": {
+        "mode": "mirror",
+        "reverse": false
+    },
+    "displayInterfaces": [
+        {
+            "interfaceName": "HDMI-1",
+            "interfaceResolutionAndOffset": "1920x1080+0+0",
+            "resolution": [
+                1920,
+                1080
+            ],
+            "offset": [
+                0,
+                0
+            ]
+        }
+    ],
+    "enableLog": false,
+    "reportIntervalMinutes": 5,
+    "systemMessagesHide": false,
+    "hideWelcomeNotice": false,
+    "forceTvOn": true,
+    "disableCECPowerCheck": false,
+    "disableAp": true,
+    "disableWarnings": false,
+    "disableWebUi": false,
+    "authCredentials": {
+        "user": "pi",
+        "password": "pi"
+    },
+    "sshPassword": "pi",
+    "newUi": false,
+    "sdConfigFileExists": false,
+    "sdConfigInstallation": null,
+    "sdConfigGroup": null,
+    "sdConfigTimezone": null,
+    "sdConfigName": null,
+    "sdConfigPin": null,
+    "reboot": {
+        "enable": false,
+        "time": null,
+        "absoluteTime": null
+    },
+    "uptime": 0,
+    "piTemperature": "",
+    "connectionStatus": "Connected",
+    "licensed": true,
+    "diskSpaceUsed": "0%",
+    "diskSpaceAvailable": "315443000",
+    "totalDiskSpace": "33%",
+    "wgetSpeed": 0,
+    "wgetBytes": 0,
+    "downloadInProgress": true,
+    "lastUpload": 0,
+    "sleep": {
+        "enable": false,
+        "ontime": null,
+        "offtime": null
+    },
+    "tvStatus": true,
+    "cecTvStatus": true,
+    "cecSupported": false
+}

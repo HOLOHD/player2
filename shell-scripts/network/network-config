@@ -1,0 +1,469 @@
+#!/bin/bash
+# network config file to be executed on keyboard connect event on usb.
+# sudo pkill udev
+#sudo udevd debug
+#sudo udevadm control --reload-rules
+#sudo udevadm monitor
+#sudo udevadm test /dev
+# for auto keyboard display
+#/etc/udev/rules.d/93-kbd.rules
+#DRIVERS=="usbhid",SUBSYSTEM=="usb", ACTION=="add",  RUN+="/home/pi/kbd.sh"
+####
+##!/bin/bash
+# Should be installed to /etc/profile.d/network-config.sh to force network-config
+# to run at initial login
+
+# You may also want to set automatic login in /etc/inittab on tty1 by adding a
+# line such as:
+# 1:2345:respawn:/bin/login -f root tty1 </dev/tty1 >/dev/tty1 2>&1 # RPICFG_TO_DISABLE
+
+#if [ $(id -u) -ne 0 ]; then
+#  printf "\nNOTICE: the software on this Raspberry Pi has not been fully configured. Please run 'sudo raspi-config'\n\n"
+#else
+#  raspi-config
+#  exec login -f pi
+#fi
+
+#INTERACTIVE=True
+DHCPCD_FILE=/etc/dhcpcd.conf
+DHCPCD_FILE_TMP=/tmp/dhcpcd.conf
+OLD_ADDR="192.168.0.200"
+OLD_NM="255.255.255.0"
+OLD_GW="192.168.0.1"
+WIFI_SSID=""
+WIFI_PASSWORD=""
+WIFI_SUPPLICANT=/etc/wpa_supplicant/wpa_supplicant.conf
+DNS_ENTRY_FILE="/etc/resolv.conf.head"
+PRY_DNS="8.8.4.4"
+SEC_DNS="8.8.8.8"
+NAME_SERVER_STR=''
+IS_HIDDEN=""
+HOME_DIR=$(sudo find / -path "*/player2/package.json" 2> /dev/null | sed -e "s|/player2/package.json$||")
+
+PI_SERVER=$(cat ${HOME_DIR}/player2/package.json | grep config | tr -d '[,"]' | awk '{print $2}')
+
+if [ -z "$PI_SERVER" ]; then
+  PI_SERVER="pisignage.com"
+fi
+
+calc_wt_size() {
+  # NOTE: it's tempting to redirect stderr to /dev/null, so supress error
+  # output from tput. However in this case, tput detects neither stdout or
+  # stderr is a tty and so only gives default 80, 24 values
+  WT_HEIGHT=17
+  WT_WIDTH=$(tput cols)
+
+  if [ -z "$WT_WIDTH" ] || [ "$WT_WIDTH" -lt 60 ]; then
+    WT_WIDTH=80
+  fi
+  if [ "$WT_WIDTH" -gt 178 ]; then
+    WT_WIDTH=120
+  fi
+  WT_MENU_HEIGHT=$(($WT_HEIGHT - 7))
+}
+
+notify() {
+  #print all operations executed
+  printf "\n"
+  figlet -f digital -c $1
+  printf "\n"
+}
+
+
+do_dhcp() {
+  sleep 1
+  whiptail --yesno "Do you Want to configure ${1} in DHCP?" 10 60 2 \
+    --yes-button Yes --no-button No
+  RET=$?
+  if [[ ${RET} -eq 0 ]]; then
+    sudo bash ${HOME_DIR}/player2/shell-scripts/system.sh --ipconfig ${1}
+  else
+    return 0
+  fi
+}
+
+do_staticip() {
+  # Static IP setting for network interfaces, $1 has interface name
+  echo "DHCPCD mode"
+  sudo rm ${DHCPCD_FILE_TMP}
+  cp ${DHCPCD_FILE} ${DHCPCD_FILE_TMP}
+  sleep 1
+  if grep -q "^interface ${1}" $DHCPCD_FILE_TMP; then
+    echo "Already In Static Mode"
+    OLD_ADDR=$(sed -n "/^interface ${1}/{n;p}" ${DHCPCD_FILE_TMP} | sed 's/.*=//')
+    OLD_GW=$(sed -n "/^interface ${1}/{n;n;p}" ${DHCPCD_FILE_TMP} | sed 's/.*=//')
+    OLD_DNS=$(sed -n "/^interface ${1}/{n;n;n;p}" ${DHCPCD_FILE_TMP} | sed 's/.*=//')
+
+    sed -i "/^interface ${1}/,+4d" ${DHCPCD_FILE_TMP}
+
+  else
+    echo "In dhcp Mode, Change To Static"
+    OLD_ADDR="192.168.1.200/24"
+    OLD_GW="192.168.1.1"
+    OLD_DNS="8.8.4.4 8.8.8.8"
+  fi
+
+  NEW_IP_ADDR=$(whiptail --inputbox "Enter Static IP address with net mask e.g. 192.168.1.200/24" \
+    10 70 -- "$OLD_ADDR" 3>&1 1>&2 2>&3)
+  if [[ ! $? -eq 0 ]]; then
+    echo "ESC OR some other key pressed"
+    return 0
+  fi
+
+  NEW_GW=$(whiptail --inputbox "Enter Gateway address  e.g. 192.168.1.1" \
+    10 70 -- "$OLD_GW" 3>&1 1>&2 2>&3)
+  if [[ ! $? -eq 0 ]]; then
+    echo "ESC OR some other key pressed"
+    return 0
+  fi
+
+  NEW_DNS=$(whiptail --inputbox "Enter DNS address  e.g. 8.8.4.4" \
+    10 70 -- "$OLD_DNS" 3>&1 1>&2 2>&3)
+  if [[ ! $? -eq 0 ]]; then
+    echo "ESC OR some other key pressed"
+    return 0
+  fi
+
+  if [[ ! -z "$NEW_IP_ADDR" ]] && [[ ! -z "$NEW_GW" ]] && [[ ! -z "$NEW_DNS" ]]; then
+    sudo bash ${HOME_DIR}/player2/shell-scripts/system.sh --ipconfig ${1} $NEW_IP_ADDR $NEW_GW $NEW_DNS 
+  else
+    whiptail --title "Error" --msgbox "Empty variables not Allowed, Moving to Main Menu" 10 60
+    return 0
+  fi
+}
+
+new_wifi_entry() {
+  if [ "$IS_HIDDEN" = "scan_ssid=1" ]; then
+    HIDDEN_NW=true
+  else
+    HIDDEN_NW=false
+  fi
+
+  sudo bash ${HOME_DIR}/player2/shell-scripts/system.sh --setup-wifi ${1} $COUNTRY $HIDDEN_NW $WIFI_SSID $WIFI_PASSWORD 
+}
+
+get_wifi_country() {
+  grep country= /etc/wpa_supplicant/wpa_supplicant.conf | cut -d "=" -f 2
+}
+
+do_wifi_country() {
+  DEFAULT_CC="$(get_wifi_country)"
+  oIFS="$IFS"
+  IFS="/"
+  value=$(cat /usr/share/zoneinfo/iso3166.tab | tail -n +26 | tr '\t' '/' | tr '\n' '/')
+  COUNTRY=$(whiptail --menu --default-item "${DEFAULT_CC}" "Select the country in which the Pi is to be used" 20 60 10 ${value} 3>&1 1>&2 2>&3)
+  IFS=$oIFS
+}
+
+update_wifi_country() {
+  #    wpa_cli -i "$IFACE" set country "$COUNTRY"
+  iw reg set "$COUNTRY" 2>/dev/null
+
+  if [[ -f /run/wifi-country-unset ]] && hash rfkill 2>/dev/null; then
+    rfkill unblock wlan
+  fi
+  #    wpa_cli -i "$IFACE" save_config > /dev/null 2>&1
+}
+
+do_wifi_config() {
+  OLD_SSID=$(cat $WIFI_SUPPLICANT | grep 'ssid' | cut -f2 -d"=" | sed 's/\"//g' | sed 's/ *$//')
+
+  OLD_PASS=$(cat $WIFI_SUPPLICANT | grep 'psk' | cut -f2 -d"=" | sed 's/\"//g' | sed 's/ *$//')
+
+  do_wifi_country
+  COUNTRY_STATUS=$?
+
+  WIFI_SSID=$(whiptail --inputbox "Enter wifi Name " \
+    10 70 -- "$OLD_SSID" 3>&1 1>&2 2>&3)
+
+  if [ ! $? -eq 0 ]; then
+    # echo  "ESC OR some other key pressed"
+    return 0
+  fi
+
+  WIFI_PASSWORD=$(whiptail --inputbox "Enter wifi Password " \
+    10 70 -- "$OLD_PASS" 3>&1 1>&2 2>&3)
+  if [ ! $? -eq 0 ]; then
+    # echo "ESC OR some other key pressed"
+    return 0
+  fi
+
+  whiptail --title "Wifi Type" --defaultno --yesno "Is this wifi hidden" 10 70 3>&1 1>&2 2>&3
+
+  if [ $? -eq 0 ]; then
+    IS_HIDDEN="scan_ssid=1"
+  else
+    IS_HIDDEN=""
+  fi
+
+  # disable access point (if enabled)
+  sudo bash ${HOME_DIR}/player2/shell-scripts/system.sh --disable-access-point
+  new_wifi_entry ${WIFI_NAME}
+  if [[ ${COUNTRY_STATUS} -eq 0 ]]; then
+    update_wifi_country
+  fi
+}
+
+do_ip_detail_config() {
+  FUN=$(whiptail --title "Raspberry Pi Network Configuration Tool (network-config)" --menu "Configure IP mode for ${1}" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Back --ok-button Select \
+    "A1 DHCP" "Set UP ${1} In DHCP mode" \
+    "A2 Static IP" "Configure ${1} Static IP" \
+    3>&1 1>&2 2>&3)
+  RET=$?
+  if [ $RET -eq 1 ]; then
+    return 0
+  elif [ $RET -eq 0 ]; then
+    case "$FUN" in
+    A1\ *) do_dhcp ${1};;
+    A2\ *) do_staticip ${1} ;;
+    *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
+    esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
+  fi
+}
+
+do_ip_config() {
+  FUN=$(whiptail --title "Raspberry Pi Network Configuration Tool (network-config)" --menu "Configure IP address mode" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Back --ok-button Select \
+    "A1 WLAN Config" "Configure WLAN" \
+    "A2 LAN Config" "Configure Ethernet LAN" \
+    3>&1 1>&2 2>&3)
+  RET=$?
+  if [ $RET -eq 1 ]; then
+    return 0
+  elif [ $RET -eq 0 ]; then
+    case "$FUN" in
+    A1\ *) do_ip_detail_config ${WIFI_NAME} ;;
+    A2\ *) do_ip_detail_config ${ETH_NAME} ;;
+    *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
+    esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
+  fi
+}
+
+do_server_name() {
+  # configure the IP addres of server or connect to main server
+
+  PI_SERVER=$(whiptail --title "Configure Server to be used" --inputbox "Enter Server Name or IP address \
+            \n (Ex. example.com OR 192.168.1.2:3000) " \
+    10 70 -- "$PI_SERVER" 3>&1 1>&2 2>&3)
+
+  RET=$?
+  if [ $RET -eq 0 ]; then
+    if [ ! -z "$PI_SERVER" ]; then
+      echo "Server name changed to $PI_SERVER"
+      PI_SERVER=${PI_SERVER//\//\\/}
+      sed -i 's/.*"config_server".*/    "config_server": \"'$PI_SERVER'",/g' ${HOME_DIR}/player2/package.json
+      sed -i 's/.*"media_server".*/    "media_server":   \"'$PI_SERVER'",/g' ${HOME_DIR}/player2/package.json
+    else
+      whiptail --title "Move To Main Menu" --msgbox "Server Name is Empty !!! Moving to Main Menu" 10 60
+      return 0
+    fi
+  else
+    whiptail --title "Move" --msgbox "Some other key pressed !!! Moving to Main Menu" 10 60
+    return 0
+  fi
+}
+
+get_current_dns() {
+  if [ -f "$DNS_ENTRY_FILE" ]; then
+    PRY_DNS=$(cat $DNS_ENTRY_FILE | grep 'nameserver' | awk 'NR == 1 {print $2}')
+    SEC_DNS=$(cat $DNS_ENTRY_FILE | grep 'nameserver' | awk 'NR == 2 {print $2}')
+
+    if [ -z "$PRY_DNS" ]; then
+      PRY_DNS="8.8.4.4"
+    fi
+    if [ -z "$SEC_DNS" ]; then
+      SEC_DNS="8.8.8.8"
+    fi
+  else
+    PRY_DNS="8.8.4.4"
+    SEC_DNS="8.8.8.8"
+  fi
+}
+
+# change_dns_entry(){
+#     # LINE=$(sed -n "/iface eth0 inet static/{=;}" /etc/network/interfaces)
+#     # INSERT_AT=`expr $LINE + 4`
+#     # # INSERT_AT = INSERT_AT + 'i'
+#     # sudo sed -i '/dns-nameservers/d' /etc/network/interfaces
+#     # sudo sed -i "${INSERT_AT}i \        dns-nameservers $PRY_DNS $SEC_DNS" /etc/network/interfaces
+# }
+
+update_dns_entry() {
+  if [ -z $1 ]; then
+    return 0
+  fi
+
+  NAME_SERVER_STR=''
+
+  if [ ! -z "$1" ]; then
+    NAME_SERVER_STR="nameserver $1"
+  fi
+
+  if [ ! -z "$2" ]; then
+    NAME_SERVER_STR="${NAME_SERVER_STR}\nnameserver $2"
+  fi
+
+  echo -e "${NAME_SERVER_STR}" | sudo tee "${DNS_ENTRY_FILE}"
+  whiptail --title "Success" --msgbox "DNS changed Successfuly" 10 60
+  return 0
+}
+
+do_dns_change() {
+  # get Current DNS entry
+  get_current_dns
+
+  PRY_DNS=$(whiptail --inputbox "Enter Primary DNS " \
+    10 70 -- "$PRY_DNS" 3>&1 1>&2 2>&3)
+
+  if [ ! $? -eq 0 ]; then
+    return 0
+  fi
+
+  SEC_DNS=$(whiptail --inputbox "Enter Secondary DNS " \
+    10 70 -- "$SEC_DNS" 3>&1 1>&2 2>&3)
+
+  if [ ! $? -eq 0 ]; then
+    return 0
+  fi
+
+  if [ -z "$PRY_DNS" ] && [ -z "$SEC_DNS" ]; then
+    whiptail --title "Error" --msgbox "Both DNS entry can't be empty, Return to Main Menu" 10 60
+    return 0
+  else
+    update_dns_entry $PRY_DNS $SEC_DNS
+  fi
+
+}
+logo_show() {
+  LINE_EXIST=$(grep "logo.nologo" /boot/cmdline.txt)
+
+  if [ ! -z "$LINE_EXIST" ]; then
+    sudo sed -i 's/logo.nologo//' /boot/cmdline.txt
+  else
+    echo "Boot Logo Already Enabled"
+  fi
+  return 0
+}
+
+logo_hide() {
+  LINE_EXIST=$(grep "logo.nologo" /boot/cmdline.txt)
+
+  if [ -z "$LINE_EXIST" ]; then
+    sudo sed -i 's/$/ logo.nologo/' /boot/cmdline.txt
+  else
+    echo "Boot Logo Already Disabled "
+  fi
+  return 0
+}
+
+do_logo_changes() {
+
+  whiptail --title "Press 'Esc' to Go back" --yes-button "Enable" --no-button "Disable" --yesno "Show berry logo during boot?" 10 60
+  RET=$?
+  if [ $RET -eq 1 ]; then
+    logo_hide
+  elif [ $RET -eq 0 ]; then
+    logo_show
+  else
+    return 0
+  fi
+}
+
+do_access_point() {
+  DNSMASQ_CHECK=$(dpkg -s dnsmasq)
+  if [ $? -eq 1 ]; then
+    whiptail --title "Message" --msgbox "Missing dnsmasq Package,Run 'sudo apt-get -y install dnsmasq'" 10 60
+    return 0
+  fi
+
+  HOSTPD_CHECK=$(dpkg -s hostapd)
+  if [ $? -eq 1 ]; then
+    whiptail --title "Message" --msgbox "Missing hostapd Package,Run 'sudo apt-get -y install hostapd'" 10 60
+    return 0
+  fi
+
+  whiptail --yesno "Would you like Wifi Access Point enabled or disabled?" \
+    10 70 20 --yes-button Enable --no-button Disable
+  ANS=$?
+
+  if [ "$ANS" -ne "0" ] && [ "$ANS" -ne "1" ]; then
+    echo "Pressed some other key"
+    return 0
+  fi
+
+  if [ "$ANS" -eq "0" ]; then
+    # enable access point using system.sh script
+    sudo bash ${HOME_DIR}/player2/shell-scripts/system.sh --enable-access-point
+  else
+    # disable access point using system.sh script
+    sudo bash ${HOME_DIR}/player2/shell-scripts/system.sh --disable-access-point
+  fi
+}
+
+do_finish() {
+  sync
+  sync
+  echo "reboot"
+  sudo systemctl reboot
+  exit 0
+}
+
+# Everything else needs to be run as root
+if [ "$(id -u)" -ne 0 ]; then
+  printf "Script must be run as root. Try 'sudo network-config'\n"
+  exit 1
+fi
+
+echo "pm2 kill"
+su - pi -c "pm2 kill"
+echo "proceeding to kill other program"
+sudo pkill node
+sudo killall -s 9 chromium-browser'
+sudo killall -s 9 chromium'
+sudo killall -s 9 /usr/lib/chromium-browser/chromium-browser-v7
+sudo pkill feh
+sudo pkill ticker
+
+INTERFACES=()
+for i in $(ip -o link show | awk -F': ' '{print $2}')
+do
+    mac=$(sudo ethtool -P $i)
+    [[ $mac != *"00:00:00:00:00:00"* ]] && INTERFACES+=( $i )
+done
+echo "Available interfaces ${INTERFACES[*]}"
+WIFI_NAME=$(printf '%s\n' "${INTERFACES[@]}" | grep -P '^wl.*')
+ETH_NAME=$(printf '%s\n' "${INTERFACES[@]}" | grep -P '^eth0|^en.*')
+echo "Wifi interface name: ${WIFI_NAME}"
+echo "Ethernet interface name: ${ETH_NAME}"
+#
+# Interactive use loop
+#
+
+calc_wt_size
+while true; do
+  FUN=$(whiptail --title "PiSignage Network and Server Configuration Tool" --menu "Setup Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Finish --ok-button Select \
+    "1 IP Config" "       Configure IP address mode(DHCP/Static)" \
+    "2 WiFi Config" "       Configure Wifi" \
+    "3 Config Server" "       Configure Servername or Address" \
+    "4 DNS Server " "       Config DNS Server" \
+    "5 Access Point Setup" "       Enable/Disable Access Point" \
+    "6 Boot Logo " "       Show/Hide StartUp Logo" \
+    3>&1 1>&2 2>&3)
+
+  RET=$?
+  if [ $RET -eq 1 ]; then
+    do_finish
+  elif [ $RET -eq 0 ]; then
+    case "$FUN" in
+    1\ *) do_ip_config ;;
+    2\ *) do_wifi_config ;;
+    3\ *) do_server_name ;;
+    4\ *) do_dns_change ;;
+    5\ *) do_access_point ;;
+    6\ *) do_logo_changes ;;
+    *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
+    esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
+  else
+    do_finish
+  fi
+
+done

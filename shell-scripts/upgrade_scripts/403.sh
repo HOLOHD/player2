@@ -1,0 +1,1 @@
+echo "upgrading script test" >> $HOME/temp.txt

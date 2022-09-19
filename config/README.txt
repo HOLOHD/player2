@@ -1,0 +1,1 @@
+The configuration of player is stored in this directory

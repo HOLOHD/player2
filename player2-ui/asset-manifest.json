@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/newui/static/css/main.5e2cca15.chunk.css",
+    "main.js": "/newui/static/js/main.288433e6.chunk.js",
+    "main.js.map": "/newui/static/js/main.288433e6.chunk.js.map",
+    "runtime-main.js": "/newui/static/js/runtime-main.7dbccc6b.js",
+    "runtime-main.js.map": "/newui/static/js/runtime-main.7dbccc6b.js.map",
+    "static/js/2.21bccf5d.chunk.js": "/newui/static/js/2.21bccf5d.chunk.js",
+    "static/js/2.21bccf5d.chunk.js.map": "/newui/static/js/2.21bccf5d.chunk.js.map",
+    "index.html": "/newui/index.html",
+    "precache-manifest.4d0736604fa958f9f530e043641a246e.js": "/newui/precache-manifest.4d0736604fa958f9f530e043641a246e.js",
+    "service-worker.js": "/newui/service-worker.js",
+    "static/css/main.5e2cca15.chunk.css.map": "/newui/static/css/main.5e2cca15.chunk.css.map",
+    "static/js/2.21bccf5d.chunk.js.LICENSE.txt": "/newui/static/js/2.21bccf5d.chunk.js.LICENSE.txt",
+    "static/media/logo.60371d9d.svg": "/newui/static/media/logo.60371d9d.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.7dbccc6b.js",
+    "static/js/2.21bccf5d.chunk.js",
+    "static/css/main.5e2cca15.chunk.css",
+    "static/js/main.288433e6.chunk.js"
+  ]
+}

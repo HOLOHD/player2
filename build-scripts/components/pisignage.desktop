@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=piSignage
+Exec=bash -c "$HOME/start.sh"
+OnlyShowIn=GNOME;
+X-GNOME-Autostart-enabled=true

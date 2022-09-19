@@ -1,0 +1,59 @@
+{
+    "assets": [],
+    "assetsValidity": [],
+    "deployedPlaylists": [],
+    "groupTicker": {},
+    "scheduledPlaylists": [],
+    "previousNormalScheduledPlaylists": [],
+    "scheduledAdvertPlaylists": [],
+    "forceAdvertRestart": false,
+    "scheduledAudioPlaylists": [],
+    "forceLoungeRestart": false,
+    "deviceReadyForPlaylist": true,
+    "forceRestart": false,
+    "justUpdateState": false,
+    "playlistTriggerType": "regular",
+    "playlistOn": false,
+    "localControl": false,
+    "playlistStartTime": null,
+    "loungeMusicOn": false,
+    "eventInProgress": false,
+    "scheduledKeyPressPlaylistIndex": -1,
+    "animationType": "none",
+    "animationEnable": false,
+    "signageBackgroundColor": "#919191",
+    "imageLetterboxed": false,
+    "resizeAssets": true,
+    "videoKeepAspect": false,
+    "videoShowSubtitles": true,
+    "shuffleContent": false,
+    "urlReloadDisable": true,
+    "keepWeblinksInMemory": true,
+    "loadPlaylistOnCompletion": false,
+    "timeToStopVideo": 0,
+    "enableYoutubeDl": true,
+    "selectedVideoPlayer": "chrome",
+    "combineDefaultPlaylist": false,
+    "playAllEligiblePlaylists": false,
+    "alternateContent": false,
+    "audioVolume": 100,
+    "xWidgets": true,
+    "mpvAudioDelay": 0,
+    "showClock": {
+        "enable": false
+    },
+    "logoObj": {
+        "logo": null,
+        "logox": 1840,
+        "logoy": 10
+    },
+    "emergencyMessage": {
+        "enable": false
+    },
+    "kioskUi": {
+        "enableKiosk": false,
+        "url": false,
+        "inactivityTimeout": 30,
+        "windowActiveStatus": false
+    }
+}

@@ -1,0 +1,17 @@
+#Server name if you need to configure a different server,not needed for pisignage.com
+server_name=piathome.com
+
+#wifi configuration block - optional, but if present all fields are needed
+country=IN
+wifi_name="your-wifi-name"
+wifi_password="your-wifi-password"
+wifi_hidden=0
+
+#Optional - if you need to auto register the player,if present all fields are needed
+#Generate pin and copy the same from your settings tab
+user_pin="123456"
+#Your username
+installation="e2etest"
+group="test"
+player_name="QCast Player"
+timezone="Asia/Calcutta"

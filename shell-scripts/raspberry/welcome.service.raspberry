@@ -1,0 +1,10 @@
+[Unit]
+Description=Welcome video
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python /home/pi/omx.py &
+TimeoutSec=0
+
+[Install]
+WantedBy=getty.target 

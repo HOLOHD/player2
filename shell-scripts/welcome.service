@@ -1,0 +1,10 @@
+[Unit]
+Description=Welcome video
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/mpv --loop /home/pi/boot_video.mov &
+TimeoutSec=0
+
+[Install]
+WantedBy=getty.target 

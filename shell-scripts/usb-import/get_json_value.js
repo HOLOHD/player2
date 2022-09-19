@@ -1,0 +1,1 @@
+for(var l=require(process.argv[2]),r=process.argv[3].split("."),e=0;e<r.length;e++)l=l[r[e]];null!=l&&null!=l&&console.log(l);

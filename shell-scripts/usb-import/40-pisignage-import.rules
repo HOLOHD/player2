@@ -1,0 +1,4 @@
+ACTION=="add", SUBSYSTEM=="block", KERNEL=="sd[a-z]1" SYMLINK+="usbflash", RUN+="/bin/systemctl start pisignage-import.service"
+
+#https://www.raspberrypi.org/forums/viewtopic.php?f=28&t=151450#p994329
+#https://unix.stackexchange.com/questions/255306/how-to-wait-for-the-copying-process-cp-to-finish/255739#255739
