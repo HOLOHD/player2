@@ -8,7 +8,7 @@
   <meta name="description" content="" />
   <meta name="author" content="" />
   
-  <title>VRQUIN</title>
+  <title>VRQUIN llp</title>
   <link rel="stylesheet" href="/app/css/toolkit-light.min.css" />
   <link rel="stylesheet" href="/app/css/font-awesome.min.css" />
   <link rel="stylesheet" href="/app/css/jquery-ui.min.css" />
@@ -17,6 +17,8 @@
   <link rel="icon" type="image/x-icon" href="/home/pi/piSignagePro/public/app/img/favicon.png">
 
   <link rel="stylesheet" href="/app/css/slick.css"/> 
+
+  <link rel="stylesheet" href="/app/css/owl.carousel.min.css" />
 	
 </head>
 
@@ -86,8 +88,12 @@
     <script src="/app/lib/utils/async.min.js"></script>
     <script src="/app/lib/utils/FileSaver.min.js"></script>
     <script src="/app/pisignage.min.js"></script>
+    <script src="./app/owl.carousel.min.js"></script>
 
-    <script src="/app/js/slick.js"></script>
+
+    <script>angular.element(document).ready(function () {
+      document.FC = FastClick.attach(document.body);
+  });</script>
 
     <script>
 
@@ -123,52 +129,191 @@
       
       </script>
 
-<script>angular.element(document).ready(function () {
-  document.FC = FastClick.attach(document.body);
-});</script>
+      <!-- owl carousel -->
+      <script>
+        
+      $(document).ready(function(){
+       
+      $('.owl-carousel').owlCarousel({
+        dots: true,
+        nav: true,
+        loop:true,
+        margin:10,
+        animateOut: 'slideOutUp',
+        animateIn: 'slideInUp',
+        // touchDrag  : false,
+        // mouseDrag  : false,
+
+        responsive:{
+        0:{
+            items:1
+        },
+        600:{
+            items:3
+        },
+        1000:{
+            items:1,
+            touchDrag  : false,
+            mouseDrag  : false,
+        }
+      } 
+
+      })
+        
+      });
+
+      </script>
+
+
+<script>
+  $(document).ready(function(){
+  var start="http://";
+  var cururl=window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "api/files";
+    var requrl=start+cururl;
+  $.getJSON(requrl, function(ddata) {
+    // var cv = ( ddata.data.dbdata[1]);
+    // var q=(cv.size);
+    // alert(q);
+    $('.item > .holder:nth-child(1) .item-desc #p2').addClass("para-1");
+    $('.item > .holder:nth-child(1) .item-desc .item-year').addClass("year-item1");
+    $('.item > .holder:nth-child(2) .item-desc .item-year').addClass("year-item2");
+    $('.item > .holder:nth-child(3) .item-desc .item-year').addClass("year-item3");
+    $('.item > .holder:nth-child(4) .item-desc .item-year').addClass("year-item4");
+    $('.item > .holder:nth-child(5) .item-desc .item-year').addClass("year-item5");
+    $('.item > .holder:nth-child(6) .item-desc .item-year').addClass("year-item6");
+    $('.item > .holder:nth-child(7) .item-desc .item-year').addClass("year-item7");
+    $('.item > .holder:nth-child(8) .item-desc .item-year').addClass("year-item8");
+
+    
+
+    $('.item > .holder:nth-child(2) .item-desc #p2').addClass("para-2");
+    $('.item > .holder:nth-child(3) .item-desc #p2').addClass("para-3");
+    $('.item > .holder:nth-child(4) .item-desc #p2').addClass("para-4");
+    $('.item > .holder:nth-child(5) .item-desc #p2').addClass("para-5");
+    $('.item > .holder:nth-child(6) .item-desc #p2').addClass("para-6");
+    $('.item > .holder:nth-child(7) .item-desc #p2').addClass("para-7");
+    
+    $(".para-1").css("display", "block");
+
+
+    $('.year-item1 span').replaceWith('<span>2022</span>');
+    $('.year-item2 span').replaceWith('<span>2023</span>');
+    $('.year-item3 span').replaceWith('<span>2024</span>');
+    $('.year-item4 span').replaceWith('<span>2025</span>');
+    $('.year-item5 span').replaceWith('<span>2026</span>');
+    $('.year-item6 span').replaceWith('<span>2027</span>');
+    $('.year-item7 span').replaceWith('<span>2028</span>');
+
+
+    $('.year-item1 .date').replaceWith('<h3 class="date"><i class="fa fa-calendar-check-o" aria-hidden="true"></i>january 15</h3>');
+    $('.year-item2 .date').replaceWith('<h3 class="date"><i class="fa fa-calendar-check-o" aria-hidden="true"></i>Mach 2</h3>');
+    $('.year-item3 .date').replaceWith('<h3 class="date"><i class="fa fa-calendar-check-o" aria-hidden="true"></i>April 25</h3>');
+    $('.year-item4 .date').replaceWith('<h3 class="date"><i class="fa fa-calendar-check-o" aria-hidden="true"></i>June 10</h3>');
+    $('.year-item5 .date').replaceWith('<h3 class="date"><i class="fa fa-calendar-check-o" aria-hidden="true"></i>July 18</h3>');
+
+    $('.year-item6 .date').replaceWith('<h3 class="date"><i class="fa fa-calendar-check-o" aria-hidden="true"></i>July 30</h3>');
+
+    $('.year-item7 .date').replaceWith('<h3 class="date"><i class="fa fa-calendar-check-o" aria-hidden="true"></i>September 5</h3>');
+
+    //first video content
+    $( ".para-1" ).replaceWith( "<h3>Title One Goes Here</h3><br/><p>Replace each element in the set of matched elements with the provided new content and return the set of elements that was removed.Replace each element in the set of matched elements with the provided new content and return the set of elements that was removed.</p>" );
+    //second video content
+    $( ".para-2" ).replaceWith( "<h3>Title Two Goes Here</h3><br/><p>method, like most jQuery methods, returns the jQuery object so that other methods can be chained onto it. However, it must be noted that the original jQuery object is returned. This object refers to the element that has been removed from the DOM, not the new element that has replaced it..</p>" );
+    //Three video content
+    $( ".para-3" ).replaceWith( "<h3>Title Three Goes Here</h3><br/><p>method, like most jQuery methods, returns the jQuery object so that other methods can be chained onto it. However, it must be noted that the original jQuery object is returned. This object refers to the element that has been removed from the DOM, not the new element that has replaced it..</p>" );
+    //Four video content
+    $( ".para-4" ).replaceWith( "<h3>Title Four Goes Here</h3><br/><p>method, like most jQuery methods, returns the jQuery object so that other methods can be chained onto it. However, it must be noted that the original jQuery object is returned. This object refers to the element that has been removed from the DOM, not the new element that has replaced it..</p>" );
+    //Five video content
+    $( ".para-5" ).replaceWith( "<h3>Title Five Goes Here</h3><br/><p>method, like most jQuery methods, returns the jQuery object so that other methods can be chained onto it. However, it must be noted that the original jQuery object is returned. This object refers to the element that has been removed from the DOM, not the new element that has replaced it..</p>" );
+    //Six video content
+    $( ".para-6" ).replaceWith( "<h3>Title Six Goes Here</h3><br/><p>method, like most jQuery methods, returns the jQuery object so that other methods can be chained onto it. However, it must be noted that the original jQuery object is returned. This object refers to the element that has been removed from the DOM, not the new element that has replaced it..</p>" );
+    //Seven video content
+    $( ".para-7" ).replaceWith( "<h3>Title Seven Goes Here</h3><br/><p>method, like most jQuery methods, returns the jQuery object so that other methods can be chained onto it. However, it must be noted that the original jQuery object is returned. This object refers to the element that has been removed from the DOM, not the new element that has replaced it..</p>" );
+  });
+  });
+  </script>
+
+
 
     <script>
+
+    $(document).ready( function(){
+
+
+      var btn = $('#myBtn');
+
+      $(window).scroll(function() {
+        if ($(window).scrollTop() > 300) {
+          btn.addClass('show');
+        } else {
+          btn.removeClass('show');
+        }
+      });
+
+      btn.on('click', function(e) {
+        e.preventDefault();
+        $('html, body').animate({scrollTop:0}, '300');
+      });
+
+
+
+
+    });
+
       //Get the button
-      var mybutton = document.getElementById("myBtn");
+      // var mybutton = document.getElementById("myBtn");
       
       // When the user scrolls down 20px from the top of the document, show the button
-      window.onscroll = function() {scrollFunction()};
+      // window.onscroll = function() {scrollFunction()};
       
-      function scrollFunction() {
-        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-          mybutton.style.display = "block";
-        } else {
-          mybutton.style.display = "none";
-        }
-      }
+      // function scrollFunction() {
+      //   if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+      //     mybutton.style.display = "block";
+      //   } else {
+      //     mybutton.style.display = "none";
+      //   }
+      // }
       
       // When the user clicks on the button, scroll to the top of the document
-      function topFunction() {
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-      }
+      // function topFunction() {
+      //   document.body.scrollTop = 0;
+      //   document.documentElement.scrollTop = 0;
+      // }
       </script>
 	<!-- hidebutton in assets page -->
+
   <script>
-   $(document).ready( function(){
-  function getURL() {
-      varurl = document.URL;
-      editurl = 'http://localhost:8000/welcome';
-      assesturl = 'http://localhost:8000/assets';
-if(varurl == editurl || varurl == assesturl){
+    $(document).ready( function(){
+      
+    function getURL(){
+    
+      var curl = window.location.href;
+     var start= "http://"
+     var asset_url =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "assets";
+
+     var welcome_url =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "welcome";
+
+     var comwlcm = start + welcome_url; 
+
+    
+
+    var total_url = start + asset_url;
+    
+    if(curl == total_url || curl == comwlcm ){
       $(".home-nav-btn").addClass("assets-hidden");
-      }else{
-        return false;
-      }
-  }
-getURL();
-});
-</script>
+    }else{
+      return false;
+    }
+    
+    }
+      getURL();
+     
+   });
 
   </script>
-    <script>angular.element(document).ready(function () {
-            document.FC = FastClick.attach(document.body);
-        });</script>
+
+
+
 		
 </body>
 
