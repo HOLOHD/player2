@@ -292,29 +292,14 @@
      var asset_url =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "assets";
 
      var welcome_url =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "welcome";
-     var catagories_url =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "catagories";
 
-     var cat_a =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat_a";
-     var cat_b =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat_b";
+     var comwlcm = start + welcome_url; 
 
-     var cat_c =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat_c";
-     var cat_d =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat_d";
-     var cat_e =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat_e";
-     var cat_f =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat_f";
-     var cat_g =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat_g";
-     var cat_h =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat_h";
-    
-    var comwlcm = start + welcome_url; 
-    var cata_url = start + catagories_url; 
-    var cat_a_url = start + cat_a;
-    var cat_b_url = start + cat_b;
-    var cat_c_url = start + cat_c;
-    var cat_two_url = start + cat_d + cat_e + cat_f + cat_g + cat_h ;
     
 
     var total_url = start + asset_url;
     
-    if(curl == total_url || curl == comwlcm || curl == cata_url || cat_a_url || cat_b_url || cat_b_url || cat_two_url){
+    if(curl == total_url || curl == comwlcm ){
       $(".home-nav-btn").addClass("assets-hidden");
     }else{
       return false;
