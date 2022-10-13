@@ -19,11 +19,10 @@
   <link rel="stylesheet" href="/app/css/slick.css"/> 
 
   <link rel="stylesheet" href="/app/css/owl.carousel.min.css" />
-  <link rel="manifest" href="/app/manifest.json">
-
+	
 </head>
 
-<body onload="openFull()" id="main-body">
+<body>
     <div class="container custom-cont" id="serverapp" ng-app="pisignage">
 	
         <div class="navbar navbar-fixed-top navbar-inverse main-nav" ng-controller="NavbarCtrl">
@@ -36,7 +35,7 @@
               <div class="row">
 
                 <div class="col-sm-4">
-                    <button class="btn btn-link navbar-btn home-nav-btn" ng-click="goHome()" style="text-decoration: none;">HOME</button>
+                    <button class="btn btn-link navbar-btn home-nav-btn" ng-click="goHome()">HOME</button>
                 </div>
 
                 <div class="col-sm-4">
@@ -56,13 +55,12 @@
                 
 
               </div>
-              
+			
         </div>
 		
     <div class="mobile" ui-view></div>
 		<!-- <a href="#back-to-top">Back to TOP</a>  -->
-    <a href="#" onclick="topFunction()" id="myBtn" title="Go to top"><i class="fa fa-angle-up" aria-hidden="true"></i></a>
-
+        <a href="#" onclick="topFunction()" id="myBtn" title="Go to top"><i class="fa fa-angle-up" aria-hidden="true"></i></a>
     </div>
     
 	<footer class="bg-light text-center text-lg-start">
@@ -91,53 +89,11 @@
     <script src="/app/lib/utils/FileSaver.min.js"></script>
     <script src="/app/pisignage.min.js"></script>
     <script src="/app/owl.carousel.min.js"></script>
-    <script src="/app/js/serviceWorker.js"></script>
 
 
     <script>angular.element(document).ready(function () {
       document.FC = FastClick.attach(document.body);
   });</script>
-
-
-  <script>
-
-// function openFull(){
-
-// addEventListener("click", function() {
-//     var el = document.documentElement
-//         , rfs =
-//                el.requestFullScreen
-//             || el.webkitRequestFullScreen
-//             || el.mozRequestFullScreen
-//     ;
-//     rfs.call(el);
-// });
-
-
-
-// function openFull() {
-
-//   window.onload = function() {
-// 	window.moveTo(0, 0);
-// 	window.resizeTo(screen.availWidth, screen.availHeight);
-// }
-
-
- 
-// let elem = document.getElementsByTagName("BODY")[0];
-
-// if (!document.fullscreenElement) {
-//     elem.requestFullscreen().catch(err => {
-//       alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-//     });
-//   } else {
-//     document.exitFullscreen();
-//   }
-
-//  }
-
-
-  </script>
 
     <script>
 
@@ -283,7 +239,8 @@
 
     $(document).ready( function(){
 
-     var btn = $('#myBtn');
+
+      var btn = $('#myBtn');
 
       $(window).scroll(function() {
         if ($(window).scrollTop() > 300) {
@@ -330,22 +287,22 @@
       
     function getURL(){
     
-    var curl = window.location.href;
-    var start= "http://"
-    var asset_url =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "assets";
+      var curl = window.location.href;
+     var start= "http://"
+     var asset_url =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "assets";
 
-    var welcome_url =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "welcome";
-    var catagories_url =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "catagories";
+     var welcome_url =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "welcome";
+     var catagories_url =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "catagories";
 
-    var cat_a =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat-a";
-    var cat_b =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat-b";
+     var cat_a =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat_a";
+     var cat_b =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat_b";
 
-    var cat_c =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat-c";
-    var cat_d =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat-d";
-    var cat_e =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat-e";
-    var cat_f =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat-f";
-    var cat_g =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat-g";
-    var cat_h =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat-h";
+     var cat_c =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat_c";
+     var cat_d =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat_d";
+     var cat_e =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat_e";
+     var cat_f =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat_f";
+     var cat_g =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat_g";
+     var cat_h =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat_h";
     
     var comwlcm = start + welcome_url; 
     var cata_url = start + catagories_url; 
@@ -357,7 +314,7 @@
 
     var total_url = start + asset_url;
     
-    if(curl == comwlcm || curl == cata_url || curl ==cat_a_url || curl ==cat_b_url || curl == cat_b_url || curl == cat_two_url){
+    if(curl == total_url || curl == comwlcm || curl == cata_url || cat_a_url || cat_b_url || cat_b_url || cat_two_url){
       $(".home-nav-btn").addClass("assets-hidden");
     }else{
       return false;
@@ -373,35 +330,12 @@
   <script>
 
     $(document).ready( function(){
-      var start= "http://"
-      var curl = window.location.href;
 
-      var cat_a =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat-a";
-      var cat_b =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "cat-b";
-      var cat_assets =  window.location.hostname + (window.location.port ? ":" + window.location.port : "") +"/"+ "assets";
+      $('body').addClass('modal-popup');
 
-      cat_a_url = start + cat_a;
-      cat_b_url = start + cat_b;
-      cat_assets_url = start + cat_assets; 
-      // alert(cat_a_url);
-
-      if(curl === cat_a_url){
-        $('body').addClass('modal-popup');
-
-      } else if(curl === cat_b_url){
-        $('body').addClass('custom-popup');
-
-      }else{
-  }
-
-
-   });
+    });
 
   </script>
-
-
-  
-
 
 
 </body>
